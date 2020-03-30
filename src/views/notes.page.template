@@ -1,0 +1,24 @@
+﻿
+<div>
+  <div class="w3-container w3-margin-bottom w3-animate-left">
+    <div id="loading-box" class="w3-margin w3-border w3-round w3-animate-left" style="display: none;">
+      <p class="w3-center" style="overflow:hidden;">
+        <i class="fa fa-2x fa-cog fa-spin"></i><br>Cargando notas...
+      </p>
+    </div>
+    <div id="list-container" style="display: none;">
+      <div xbind xfor="nota in notas" id="div-{nota.id}" class="w3-padding" style="clear:both">
+        <div xbind>Id: {nota.id}</div>
+        <textarea xbind class="w3-padding">{nota.contenido}</textarea>
+        <div class="w3-right">
+          <button xbind id="save-{nota.id}" on-click="save" class="w3-border-0"><i class="fa fa-2x fa-save"></i></button>
+          <button xbind id="delete-{nota.id}" on-click="delete" class="w3-border-0"><i class="fa fa-2x fa-trash"></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="w3-center" style="clear:both">
+      <br/>
+      <button xbind on-click="add" class="w3-border-0"><i class="fa fa-2x fa-plus"></i></button>
+    </div>
+  </div>  
+</div>

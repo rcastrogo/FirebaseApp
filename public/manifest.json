@@ -1,0 +1,22 @@
+{
+  "name": "firebase",
+  "short_name": "firebase",
+  "description": "Aplicación de prueba firebase",
+  "icons": [
+    {
+      "src": "assets/icons/icon-32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#040427",
+  "background_color": "#040427",
+  "display": "standalone",
+  "orientation": "portrait",
+  "start_url": "./"
+}
