@@ -1,6 +1,7 @@
 import pol from "./lib/mapa.js";
 import pubsub from "./lib/pubSub.Service";
 import utils from "./lib/utils.js";
+import {auth} from "./lib/firebase";
 
 // ================================================================
 // Components
@@ -15,6 +16,7 @@ import menuComponent from "./components/menu.component";
 import homePage from "./views/home.page";
 import aboutPage from "./views/about.page";
 import notesPage from "./views/notes.page";
+import loginPage from "./views/login.page";
 const TOPICS = pubsub.TOPICS;
 
 // ==========================================================================
@@ -83,6 +85,7 @@ const ctx = {
   ctx.router
     .addRoute('notes', /notes$/, notesPage)
     .addRoute('about', /about$/, aboutPage)
+    .addRoute('auth', /auth$/, loginPage)
     .addRoute('',      /$/,      homePage);
   // ===================================================================
   // Init components
@@ -212,6 +215,17 @@ function showContent(){
   }
 
 }
+
+auth.onAuthStateChanged(function(user) {
+  if (auth.currentUser) {
+    console.log('login');
+    //user.getIdToken(true).then( result => {
+    // console.log(result);
+    //});
+  } else {
+    console.log('logout');   
+  }
+});
 
 ctx.router.sync();
 

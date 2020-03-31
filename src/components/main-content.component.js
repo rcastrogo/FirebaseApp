@@ -14,8 +14,8 @@ export default function(ctx){
         innerHTML : '',
         className : 'w3-container',
         style     : { 
-          minHeight : '440px',
-          padding   : '0 0 60px 0'
+          minHeight : '0',
+          padding   : '0 0 0 0'
         }
       }
       this.root = pol.build('section', options);

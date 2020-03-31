@@ -4,21 +4,32 @@
 .w3-myfont{font-family: "Comic Sans MS", cursive, sans-serif;}
 .w3-30{font-size: 31px }
 
-html{background-color: #040427; color:whitesmoke}
+.w3-firebase{background-color: #4a4a4a; color:silver}
+.w3-firebase-btn{ 
+  background-color:white;
+  color: #4a4a4a; 
+  border:solid 1px #4a4a4a;
+  box-shadow: 1px 1px 9px silver;
+  border-radius: 94px;
+  padding: 5px 8px;
+  opacity:.7
+}
+h2, h3{color:#be7d00 !important}
 
-textarea{ resize: none; width:100%;background-color: #040427; color:whitesmoke }
-footer#appFooter {position:fixed;width:100%;bottom:0;box-shadow: 0px 0px 1px #ECEFF1;z-index:1;background-color: #040427}
+html{background-color: whitesmoke; }
 
-#appMenu{ box-shadow: 0px 0px 1px #ECEFF1;background-color: #040427}
+textarea{ resize: none; width:100%;}
 
-#appMenu.sticky  { position: fixed; top: 0; left:0; box-shadow: 0px 0px 1px #ECEFF1; z-index:200;overflow: visible; }
+#appFooter {position:fixed;width:100%;bottom:0;box-shadow: 0px -5px 7px grey;z-index:1;}
+#appMenu{ box-shadow: 0px 5px 5px grey; }
+#appMenu.sticky  { position: fixed; top: 0; left:0; z-index:200;overflow: visible; }
 #appMenu.sticky + #app-content-container { padding-top: 40px !important; }
-#appMenu.w3-bar .w3-button, .pol-btn { background-color: #040427}
-#appMenu.w3-bar .w3-button.selected { background-color: #040427 !important; color: yellow !important;}
+
+#appMenu.w3-bar .w3-button.selected { background-color: #f68410 !important; color: white !important;}
 
 #notificationPanel {position:fixed;max-height:700px; overflow:auto; z-index:100; top:114px; width: 100%; }
-#notificationPanel div { background-color: white;margin: 6px; transition: all 1s; overflow:hidden;}
-#notificationPanel div.msg{ color: #040427; }
+#notificationPanel div { box-shadow: 1px 3px 7px silver;background-color: white; margin: 6px; transition: all 1s; overflow:hidden;}
+#notificationPanel div.msg{ color: black; }
 #notificationPanel.sticky {top:40px; max-height:640px;}
 
 .page-container {position:absolute;top:41px;bottom:0;left:0;right:0;overflow:auto}

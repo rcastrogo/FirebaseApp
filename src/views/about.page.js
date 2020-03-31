@@ -2,7 +2,7 @@ import pol from "../lib/mapa.js";
 
 const html_content = require('./about.page.template');
 
-export default function(){
+export default function(ctx){
 
   let component = {
     root   : {},
@@ -12,11 +12,11 @@ export default function(){
       return this.root;
     },
     mounted : function(){
-      //this.root
-      //    .querySelector('[about-btn-back]')
-      //    .onclick = () => {        
-      //      history.back();
-      //    };
+      this.root
+          .querySelector('[about-btn]')
+          .onclick = () => {        
+            ctx.router.navigateTo('');
+          };
     }
   };
 

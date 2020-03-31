@@ -10,7 +10,7 @@ export default function(){
       let options = { 
         id        : "appFooter",
         innerHTML : __template.format(this),
-        className : 'w3-container w3-center'
+        className : 'w3-container w3-center w3-firebase'
       }
       return pol.build('footer', options);
     },

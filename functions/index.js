@@ -25,7 +25,7 @@ function result(data) {
 }
 
 function enableCors(request, response) {
-  response.set('Access-Control-Allow-Headers', 'Origin, Content-Type');
+  response.set('Access-Control-Allow-Headers', 'Origin, Content-Type, authorization');
   response.set('Access-Control-Allow-Origin', request.headers.origin);
   response.set('Access-Control-Allow-Credentials', 'true');
 }

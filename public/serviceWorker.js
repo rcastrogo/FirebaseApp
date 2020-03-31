@@ -1,5 +1,5 @@
 
-const cacheName = 'notas-v6';
+const cacheName = 'firebase-v1';
 
 const staticAssets = [
   './',

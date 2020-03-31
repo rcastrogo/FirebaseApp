@@ -1,0 +1,29 @@
+﻿
+<div>
+  <div class="w3-container w3-margin-bottom w3-animate-left">
+    <h3>Registro</h3>
+    <form class="w3-margin-bottom">
+      <label for="txt-email">Correo electrónico</label>
+      <input class="w3-input w3-border" type="text" id="txt-email" >
+      <label for="txt-password">Contraseña</label>
+      <input class="w3-input w3-border" type="text" id="txt-password" >
+    </form>
+    <div class="w3-container w3-margin-bottom w3-center">
+      <button type="button" register-btn class="w3-button w3-firebase-btn">Aceptar</button>
+    </div>
+    <h3>Inicio de sesión</h3>
+    <form class="w3-margin-bottom">
+      <label for="txt-login-email">Correo electrónico</label>
+      <input class="w3-input w3-border" type="text" id="txt-login-email" >
+      <label for="txt-login-password">Contraseña</label>
+      <input class="w3-input w3-border" type="text" id="txt-login-password" >
+    </form>
+    <div class="w3-container w3-margin-bottom w3-center">
+      <button type="button" login-btn class="w3-button w3-firebase-btn"><i class="fa fa-2x fa-sign-in"></i></button>
+    </div>
+    <h3>Cerrar sesión</h3>
+    <div class="w3-container w3-margin-bottom w3-center">
+      <button type="button" logout-btn class="w3-button w3-firebase-btn"><i class="fa fa-2x fa-sign-out"></i></button>
+    </div>
+  </div>
+</div>

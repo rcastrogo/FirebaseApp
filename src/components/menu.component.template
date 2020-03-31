@@ -1,6 +1,7 @@
 ﻿
-<nav id="appMenu" class="w3-bar">
-  <a href=""          route-link on-publish="TOPICS.VIEW_CHANGE:sync" class="w3-bar-item w3-button selected">Inicio</a>
-  <a href="notes"     route-link on-publish="TOPICS.VIEW_CHANGE:sync" class="w3-bar-item w3-button selected">Notas</a>
-  <a href="about"     route-link on-publish="TOPICS.VIEW_CHANGE:sync" class="w3-bar-item w3-button w3-right">?</a>
+<nav id="appMenu" class="w3-bar w3-firebase">
+  <a href=""      route-link on-publish="TOPICS.VIEW_CHANGE:sync" class="w3-bar-item w3-button selected">Inicio</a>
+  <a href="notes" route-link on-publish="TOPICS.VIEW_CHANGE:sync" class="w3-bar-item w3-button selected">Notas</a>
+  <a href="auth"  route-link on-publish="TOPICS.VIEW_CHANGE:sync" class="w3-bar-item w3-button w3-right"><i class="fa fa-sign-in"></i></a>
+  <a href="about" route-link on-publish="TOPICS.VIEW_CHANGE:sync" class="w3-bar-item w3-button w3-right">?</a>  
 </nav>  

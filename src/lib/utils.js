@@ -61,7 +61,7 @@ function addEventListeners(container, handlers, context) {
          if (index === 2) {
            e.onclick = function(e){
              let router = context.router;
-             let route = router.normalizePath(e.target.href);
+             let route = router.normalizePath(e.currentTarget.href);
              if (router.current != route) {
                try {
                  router.navigateTo(route);
