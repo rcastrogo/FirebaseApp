@@ -48,6 +48,7 @@ export default {
   publish,
   unsubscribe,
   TOPICS : { 
+    AUTH_CHANGE      : 'auth:change',
     VIEW_CHANGE      : 'view:change',
     VALUE_CHANGE     : 'value:change',
     MUNICIPIO_CHANGE : 'municipio:change',

@@ -461,7 +461,10 @@ let __module = {};
         }
         return repeater;
       }).forEach( repeater => repeater.parentNode.removeChild(repeater) );
-
+      // ====================================================================
+      // Añadir eventos
+      // ====================================================================
+      if(scope.addEventListeners) scope.addEventListeners(e, scope);
       return e;
     }
 

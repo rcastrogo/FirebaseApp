@@ -20,19 +20,23 @@ export default function(ctx){
   };
 
   function initAll(){
-    functions.httpsCallable('helloWorld')()
-             .then(function(result){
-                     ctx.publish('msg++fecha++1', result.data.message);
-                   });
-    functions.httpsCallable('getDate')()
-             .then(function(result){                 
-                     ctx.publish('msg++fecha++2', new Date(result.data.date));
-                   });
+    //functions.httpsCallable('helloWorld')()
+    //         .then(function(result){
+    //                 ctx.publish('msg++fecha++1', result.data.message);
+    //               });
+    //functions.httpsCallable('getDate')()
+    //         .then(function(result){                 
+    //                 ctx.publish('msg++fecha++2', new Date(result.data.date));
+    //               });
   }
 
   function initEventListeners(target) {
-    utils.addEventListeners(target, { });
-    return target;
+    return pol.templates
+              .fill( target, {
+                addEventListeners : utils.addEventListeners,
+                mustLogin : ctx.currentUser ? false : true,
+                login     : () => ctx.router.navigateTo('auth')
+              });
   }
 
   return component;

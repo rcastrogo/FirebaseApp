@@ -2,7 +2,8 @@ import pol from "../lib/mapa.js";
 import {database, auth, app as firebase} from '../lib/firebase';
 import utils from "../lib/utils.js";
 
-const html_content = require('./notes.page.template');
+const html_content     = require('./notes.page.template');
+const SERVER_TIMESTAMP = firebase.firestore.FieldValue.serverTimestamp();
 
 export default function(ctx){
 
@@ -74,7 +75,9 @@ export default function(ctx){
       database.collection('notas')
         .add({ contenido : button.parentNode
                                  .previousElementSibling
-                                 .value })
+                                 .value,
+               userId    : ctx.currentUser.uid,
+               timestamp : SERVER_TIMESTAMP})
         .then(function(ref) {
           button.id = 'save-{0}'.format(ref.id);
           button.parentNode
@@ -104,7 +107,8 @@ export default function(ctx){
               contenido : component.root
                                    .querySelector('#div-{0} textarea'.format(id))
                                    .value,
-              timestamp : firebase.firestore.FieldValue.serverTimestamp()
+              userId    : ctx.currentUser.uid,
+              timestamp : SERVER_TIMESTAMP
             })
             .then(function() {
               nota.style.opacity = '';

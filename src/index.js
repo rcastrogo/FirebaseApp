@@ -17,6 +17,7 @@ import homePage from "./views/home.page";
 import aboutPage from "./views/about.page";
 import notesPage from "./views/notes.page";
 import loginPage from "./views/login.page";
+
 const TOPICS = pubsub.TOPICS;
 
 // ==========================================================================
@@ -27,6 +28,10 @@ const ctx = {
   components : [],
   router : {
     routes  : [],
+    clear   : function(){
+      this.routes = [];
+      return this;
+    },
     addRoute: function (name, pattern, controller, isView) {
       this.routes.push({ name      : name,
                          path      : pattern,
@@ -70,30 +75,51 @@ const ctx = {
 // Init App
 // =====================================================================
 (function(){
-  // ===================================================================
-  // Main components
-  // ===================================================================
-  ctx.components = [ 
-    headerComponent(ctx),
-    menuComponent(ctx),
-    contentComponent(ctx),
-    footerComponent(ctx)
-  ];
-  // ===================================================================
-  // Add Routes
-  // ===================================================================
-  ctx.router
-    .addRoute('notes', /notes$/, notesPage)
-    .addRoute('about', /about$/, aboutPage)
-    .addRoute('auth', /auth$/, loginPage)
-    .addRoute('',      /$/,      homePage);
+
   // ===================================================================
   // Init components
   // ===================================================================
-  ctx.components.forEach( c => {
-    if(c.init) c.init();
-    ctx.root.appendChild(c.render());
-    if(c.mounted) c.mounted(); 
+  function __initComponents() {
+    if(ctx.components.length) return;
+    ctx.components = [ 
+      headerComponent(ctx),
+      menuComponent(ctx),
+      contentComponent(ctx),
+      footerComponent(ctx)
+    ];
+    ctx.components.forEach( c => {
+      if(c.init) c.init();
+      ctx.root.appendChild(c.render());
+      if(c.mounted) c.mounted(); 
+    });
+  }
+  // ===================================================================
+  // Autenticación del usuario
+  // ===================================================================
+  auth.onAuthStateChanged(function(user) {
+    __initComponents();
+    if (auth.currentUser) {
+      //user.getIdToken(true).then( result => { console.log(result); });
+      localStorage.setItem('lastUserLoggedEmail', auth.currentUser.email);
+      ctx.currentUser = auth.currentUser;
+      ctx.router
+         .clear()
+         .addRoute('notes', /notes$/, notesPage)
+         .addRoute('about', /about$/, aboutPage)
+         .addRoute('auth' , /auth$/ , loginPage)
+         .addRoute(''     , /$/     , homePage);
+
+    } else {
+      ctx.currentUser = auth.currentUser;
+      ctx.router.routes = [];
+      ctx.router
+         .clear()
+         .addRoute('about', /about$/, aboutPage)
+         .addRoute('auth' , /auth$/ , loginPage)
+         .addRoute(''     , /$/     , homePage);     
+    }
+    ctx.publish(ctx.topics.AUTH_CHANGE, auth.currentUser);
+    ctx.router.sync();
   });
   // ===================================================================
   // Sync UI on view change
@@ -183,10 +209,11 @@ const ctx = {
 // ===================================================
 // View change
 // ===================================================
-const container = pol.$('app-content-container');
+let container;
 let currentBuilder;
 let current;
 function showContent(){
+  container = container || pol.$('app-content-container');
   let viewBuilder = ctx.router.current.controler;
   if(!current || currentBuilder != viewBuilder) {
     // =======================================================
@@ -213,21 +240,7 @@ function showContent(){
     if(current.mounted) current.mounted();
     ctx.publish(TOPICS.VIEW_CHANGE, ctx.router.current);
   }
-
 }
-
-auth.onAuthStateChanged(function(user) {
-  if (auth.currentUser) {
-    console.log('login');
-    //user.getIdToken(true).then( result => {
-    // console.log(result);
-    //});
-  } else {
-    console.log('logout');   
-  }
-});
-
-ctx.router.sync();
 
 window.onpopstate = function(event){
   ctx.router.sync();

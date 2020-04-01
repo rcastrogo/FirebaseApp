@@ -23,15 +23,23 @@ export default function(ctx){
   };
 
   function initAll() {
-
     utils.addEventListeners(component.root, 
                             component.eventHandlers, { 
                               router      : ctx.router,
                               toggleMenu  : toggleMenu,
                               hideMenu    : hideMenu
                             });
+    ctx.subscribe(ctx.topics.AUTH_CHANGE, syncMenu);
+  }
 
-
+  function syncMenu(message, user) {
+    let links = pol.$('[route-link]', component.root);
+    links.map(link => {
+      let route = ctx.router
+                     .routes
+                     .where({ name : link.dataset.key })[0];
+      link.style.display = route ? '' : 'none';
+    });
   }
 
   function syncMenuItem(e, data) {
@@ -47,6 +55,7 @@ export default function(ctx){
     dropdownContent = e.nextElementSibling;
     dropdownContent.classList.toggle('w3-show');
   }
+  
   function hideMenu(e) {
     if (dropdownContent){
       dropdownContent.classList.remove('w3-show');
