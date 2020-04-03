@@ -67,3 +67,4 @@ node_modules/
 .vscode
 
 *.js.map
+functions/serviceAccountKey.json
