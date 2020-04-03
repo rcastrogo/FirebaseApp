@@ -1,0 +1,34 @@
+﻿
+<div>
+  <div class="w3-container w3-margin-bottom w3-animate-left">
+
+    <h3>Invocación de funciones</h3>
+    <p style="text-indent:1em;">
+      Cloud Functions para Firebase te permite ejecutar automáticamente el código de backend en respuesta a eventos activados 
+      por las funciones de Firebase y las solicitudes HTTPS. 
+    </p>
+    <p style="text-indent:1em;">
+      Tu código se almacena en la nube de Google y se ejecuta en un entorno administrado. 
+      No necesitas administrar ni escalar tus propios servidores.
+    </p>
+
+    <div class="w3-container w3-margin-bottom w3-center">
+      <button type="button" on-click="callHelloWorld" class="w3-button w3-firebase-btn" style="width:75%;text-align:left;padding-left: 20px;">
+        <i class="fa fa-2x fa-gear"></i> Mensaje
+      </button>
+      <div class="w3-container w3-border-bottom w3-padding w3-margin" on-publish="msg__helloworld"></div>
+    </div>
+        
+    <div class="w3-container w3-margin-bottom w3-center">
+      <button type="button" on-click="callGetServerTime" class="w3-button w3-firebase-btn" style="width:75%;text-align:left;padding-left: 20px;">
+        <i class="fa fa-2x fa-clock-o"></i> Hora del servidor
+      </button>
+      <div class="w3-container w3-border-bottom w3-padding w3-margin" on-publish="msg__getdate"></div>
+    </div>
+
+    <div class="w3-container w3-center">
+      <button type="button" on-click="goToHome" class="w3-button w3-firebase-btn"><i class="fa fa-2x fa-home"></i></button>
+    </div>
+
+  </div>
+</div>

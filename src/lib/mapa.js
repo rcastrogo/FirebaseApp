@@ -27,9 +27,11 @@ let __module = {};
       isBoolean   : function(v){return typeof v == 'boolean';},
       isNumber    : function(v){return typeof v == 'number';},
       isFunction  : function(v){return typeof v == 'function';},
+      isDate      : function(v){return Object.prototype.toString.call(v) === '[object Date]'},
       isObject    : function(v){return v && typeof v == 'object';},
-      clone       : function(o) {
-        if(module.isArray(o))             return o.slice(0);
+      clone       : function(o){
+        if(module.isDate(o))  return new Date(o.getTime());
+        if(module.isArray(o)) return o.slice(0);
         if(module.isObject(o) && o.clone) return o.clone();
         if(module.isObject(o)){               
           return Object.keys(o).reduce( function(a, k){
@@ -154,16 +156,26 @@ let __module = {};
   (function(module){
     module.apply(Date.prototype, {
       format: function (fmt) {
+
+        function formatTime(date) {
+          return '{0|paddingLeft,00}:{1|paddingLeft,00}:{2|paddingLeft,00}'.format(
+                    date.getHours().toString(),
+                    date.getMinutes().toString(),
+                    date.getSeconds().toString())
+        }
         if (fmt == 'yyyymmdd') {
           return '{2|paddingLeft,0000}/{1|paddingLeft,00}/{0|paddingLeft,00}'.format(
                     this.getDate().toString(),
                     (this.getMonth() + 1).toString(),
                     this.getFullYear().toString());
         }
+
         return '{0|paddingLeft,00}/{1|paddingLeft,00}/{2|paddingLeft,0000}'.format(
                   this.getDate().toString(),
                   (this.getMonth() + 1).toString(),
-                  this.getFullYear().toString());
+                  this.getFullYear().toString()) +
+                  ((fmt === 'hhmmss') ? ' ' + formatTime(this)
+                                      : '');
       }
     });
   })(_module);

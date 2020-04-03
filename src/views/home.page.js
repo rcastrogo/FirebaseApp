@@ -20,14 +20,7 @@ export default function(ctx){
   };
 
   function initAll(){
-    //functions.httpsCallable('helloWorld')()
-    //         .then(function(result){
-    //                 ctx.publish('msg++fecha++1', result.data.message);
-    //               });
-    //functions.httpsCallable('getDate')()
-    //         .then(function(result){                 
-    //                 ctx.publish('msg++fecha++2', new Date(result.data.date));
-    //               });
+
   }
 
   function initEventListeners(target) {

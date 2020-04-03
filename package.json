@@ -9,6 +9,7 @@
     "start": "webpack-dev-server --mode development --hot",
     "serve-hosting": "firebase serve --only hosting",
     "serve-functions": "firebase serve --only functions",
+    "serve-all": "firebase serve --only hosting,functions",
     "deploy-hosting": "firebase deploy --only hosting",
     "deploy-functions": "firebase deploy --only functions"
   },

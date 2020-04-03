@@ -15,7 +15,8 @@
         <div xbind xfor="nota in notas" id="div-{nota.id}" class="w3-padding w3-animate-right" style="transition: all 1s">      
           <div class="w3-card-4 w3-padding w3-round">
             <textarea xbind class="w3-padding w3-round" style="height:100px; display:inline-block;">{nota.contenido}</textarea>
-            <div class="w3-right-align w3-padding-small">
+            <div class="w3-small" xbind>Fecha: {nota.timestamp|format,hhmmss}<br>Usuario: {nota.uid}</div>
+            <div class="w3-right-align w3-padding-small w3-border-top">
               <button xbind id="save-{nota.id}" on-click="save" class="w3-tbutton w3-firebase-btn"><i class="fa fa-2x fa-save"></i></button>
               <button xbind id="delete-{nota.id}" on-click="delete" class="w3-tbutton w3-firebase-btn"><i class="fa fa-2x fa-trash"></i></button>
             </div>

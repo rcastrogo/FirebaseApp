@@ -53,14 +53,22 @@ export default function(ctx){
       database.collection('notas')
               .get()
               .then(result => {
-                let notas = result.docs.map( doc => {
-                  return { id : doc.id, contenido : doc.data().contenido };
-                });
-                resolve(notas);
+                resolve(
+                  result.docs
+                        .map( doc => {
+                          let data = doc.data();
+                          return { id        : doc.id, 
+                                   contenido : data.contenido,
+                                   uid       : data.userId,
+                                   timestamp : data.timestamp.toDate()
+                                 };
+                        })
+                        .orderBy('timestamp')
+                        .reverse()
+                );
               })
               .catch(e => reject(e));
     });
-
   }
 
   // ===============================================================
@@ -74,15 +82,17 @@ export default function(ctx){
     if (id == 'empty') {
       database.collection('notas')
         .add({ contenido : button.parentNode
-                                 .previousElementSibling
+                                 .parentNode
+                                 .firstElementChild
                                  .value,
                userId    : ctx.currentUser.uid,
                timestamp : SERVER_TIMESTAMP})
         .then(function(ref) {
           button.id = 'save-{0}'.format(ref.id);
+          button.nextElementSibling.id = 'delete-{0}'.format(ref.id);
           button.parentNode
                 .parentNode
-                .parentNode.id = 'div-{0}'.format(ref.id)
+                .parentNode.id = 'div-{0}'.format(ref.id);
           // =======================================================
           // Mensaje de información
           // =======================================================
@@ -100,7 +110,6 @@ export default function(ctx){
     // ============================================================
     let nota = pol.$('div-{0}'.format(id));
     nota.style = 'opacity:.6;';
-    var currentUser = auth.currentUser;
     database.collection("notas")
             .doc(id)
             .update({ 
@@ -168,7 +177,9 @@ export default function(ctx){
     let context = { 
       notas  : [ { 
         id        : 'empty', 
-        contenido : 'Texto de la nota'
+        contenido : 'Texto de la nota',
+        uid       : ctx.currentUser.uid,
+        timestamp : new Date()
       }],
       save   : saveNote,
       delete : deleteNote

@@ -18,5 +18,5 @@ app.initializeApp(firebaseConfig);
 const functions = app.functions();
 const database = app.firestore();
 const auth = app.auth();
-//functions.useFunctionsEmulator('http://localhost:5000');
+//functions.useFunctionsEmulator('http://localhost:5001');
 export { functions, database, auth, app};

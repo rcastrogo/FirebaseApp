@@ -17,6 +17,7 @@ import homePage from "./views/home.page";
 import aboutPage from "./views/about.page";
 import notesPage from "./views/notes.page";
 import loginPage from "./views/login.page";
+import functionsPage from "./views/functions/page";
 
 const TOPICS = pubsub.TOPICS;
 
@@ -104,10 +105,11 @@ const ctx = {
       ctx.currentUser = auth.currentUser;
       ctx.router
          .clear()
-         .addRoute('notes', /notes$/, notesPage)
-         .addRoute('about', /about$/, aboutPage)
-         .addRoute('auth' , /auth$/ , loginPage)
-         .addRoute(''     , /$/     , homePage);
+         .addRoute('functions', /funcs$/, functionsPage)
+         .addRoute('notes'    , /notes$/, notesPage)
+         .addRoute('about'    , /about$/, aboutPage)
+         .addRoute('auth'     , /auth$/ , loginPage)
+         .addRoute(''         , /$/     , homePage);
 
     } else {
       ctx.currentUser = auth.currentUser;
