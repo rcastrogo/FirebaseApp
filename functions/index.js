@@ -1,3 +1,7 @@
+// ===============================================================
+// Firebase Functions
+// ===============================================================
+const functions = require('firebase-functions');
 
 // ===============================================================
 // Firebase
@@ -36,7 +40,11 @@ const app     = express();
 
 
 const validateFirebaseIdToken = async (req, res, next) => {
-  
+  console.log(req.url);
+  if (req._parsedUrl.pathname == '/auth/token') {
+    next();
+    return;
+  }
   if (!req.headers.authorization ||
       !req.headers.authorization.startsWith('Bearer ')) {
     res.status(403).send('Unauthorized');
@@ -51,7 +59,6 @@ const validateFirebaseIdToken = async (req, res, next) => {
     res.status(403).send('Unauthorized');
     return;
   }
-
 };
 
 app.use(validateFirebaseIdToken);
@@ -104,22 +111,20 @@ app.get('/auth/data', async (req, res) => {
        }).catch(function(error) {
          res.send(error);
        });
-
 })
 
-// ===============================================================
-// Firebase Functions
-// ===============================================================
-const functions = require('firebase-functions');
-
 exports.helloWorld = functions.https.onCall((data, context) => {
-  //  if (!context.auth) return {status: 'error', code: 401, message: 'Not signed in'}
-  //  return new Promise((resolve, reject) => {
-  //    // find a user by data.uid and return the result
-  //    resolve(user)
-  //  })
-  return { success : true, message : 'Hello from Firebase!'};
-
+  if (!context.auth){
+    return { 
+      status  : 'error', 
+      code    : 401, 
+      message : 'Not signed in'
+    }
+  }
+  return { 
+    success : true, 
+    message : 'Hello from Firebase!'
+  };
 });
 
 exports.getDate = functions.https.onRequest((request, response) => {
@@ -128,11 +133,12 @@ exports.getDate = functions.https.onRequest((request, response) => {
   response.set('Access-Control-Allow-Credentials', 'true');
   response.setHeader('Content-Type', 'application/json')
   response.status(200)
-          .send({ success : true, 
-                  date    : Date.now()
-                });
+          .send(
+            { data : { 
+              success : true, 
+              date    : Date.now()
+            }
+          });
 })
 
 exports.app = functions.https.onRequest(app);
-
-

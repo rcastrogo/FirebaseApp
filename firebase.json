@@ -1,6 +1,5 @@
 {
   "hosting": {
-    "site": "notas-app",
     "public": "public",
     "headers": [
       {

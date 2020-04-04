@@ -37,6 +37,7 @@ export default function(ctx){
                          ctx.publish('msg__getdate', new Date(result.data.date));
                        })
                  .catch(function(error) {
+                   console.log(error);
                     ctx.publish('msg__getdate', error);
                  });
         
