@@ -1,0 +1,42 @@
+﻿
+<div>
+  <div class="w3-container w3-margin-bottom w3-animate-left">
+
+    <h3>Notificaciones</h3>
+    <div xbind xif="Notification.permission!='granted'" class="">
+      <p style="text-indent:1em;">
+        Para recibir y enviar mensajes al resto de usuarios debes habilitar las notificaciones.
+      </p>
+      <div class="w3-center">
+        <button type="button" on-click="requestPermission" 
+                class="w3-button w3-firebase-btn w3-center" 
+                style="text-align:left;padding-left: 20px;padding-right: 20px;">Habilitar
+        </button>
+      </div>
+    </div>
+
+    <div xbind xif="Notification.permission=='granted'" class="">
+      <p style="text-indent:1em;">
+        Marca los grupos de los que quieres recibir notificaciones:
+        <ul class="w3-ul">
+          <li><label for="check-c" class="w3-block"><input id="check-c" class="w3-check" type="checkbox" on-click="subscribeUnsubscribe:cliclistas" /> Ciclistas</label></li>
+          <li><label for="check-p" class="w3-block"><input id="check-p" class="w3-check" type="checkbox" on-click="subscribeUnsubscribe:programadores" /> Programadores</label></li>
+          <li><label for="check-a" class="w3-block"><input id="check-a" class="w3-check" type="checkbox" on-click="subscribeUnsubscribe:administradores" /> Administradores</label></li>
+        </ul>
+      </p>
+
+      <div class="w3-card-4 w3-padding w3-round">
+        <textarea message xbind class="w3-padding w3-round" style="height:100px; display:inline-block;"></textarea>
+        <div class="w3-right-align w3-padding-small w3-center">
+          <button on-click="send" class="w3-tbutton w3-firebase-btn">>>></button>
+        </div>
+      </div>
+
+      <div class="w3-container w3-border-bottom w3-padding w3-margin" on-publish="msg__info">
+
+      </div>
+ 
+    </div>
+
+  </div>
+</div>

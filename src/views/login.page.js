@@ -1,6 +1,6 @@
 ﻿import pol from "../lib/mapa.js";
 import utils from '../lib/utils';
-import {auth}  from '../lib/firebase';
+import {auth, messaging}  from '../lib/firebase';
 
 const html_content = require('./login.page.template');
 

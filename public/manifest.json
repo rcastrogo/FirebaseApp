@@ -18,5 +18,11 @@
   "background_color": "#4a4a4a",
   "display": "standalone",
   "orientation": "portrait",
-  "start_url": "./"
+  "start_url": "./",
+  "permissions": {
+    "desktop-notification": {
+      "description": "Needed for creating system notifications."
+    }
+  },
+  "gcm_sender_id": "103953800507"
 }

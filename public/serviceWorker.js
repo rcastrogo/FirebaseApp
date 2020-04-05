@@ -1,4 +1,4 @@
-
+﻿
 const cacheName = 'firebase-v1';
 
 const staticAssets = [
@@ -68,3 +68,8 @@ async function networkFirst(req) {
       return await cache.match(req);
   }
 }
+
+self.addEventListener('push', function(event) {
+  const {notification} = JSON.parse(event.data.text());
+  event.waitUntil(self.registration.showNotification(notification.title, notification));
+});

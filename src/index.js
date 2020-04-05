@@ -1,7 +1,7 @@
 import pol from "./lib/mapa.js";
 import pubsub from "./lib/pubSub.Service";
 import utils from "./lib/utils.js";
-import {auth} from "./lib/firebase";
+import {auth, messaging} from "./lib/firebase";
 
 // ================================================================
 // Components
@@ -18,6 +18,7 @@ import aboutPage from "./views/about.page";
 import notesPage from "./views/notes.page";
 import loginPage from "./views/login.page";
 import functionsPage from "./views/functions/page";
+import notificationsPage from "./views/notifications/page";
 
 const TOPICS = pubsub.TOPICS;
 
@@ -105,11 +106,12 @@ const ctx = {
       ctx.currentUser = auth.currentUser;
       ctx.router
          .clear()
-         .addRoute('functions', /funcs$/, functionsPage)
-         .addRoute('notes'    , /notes$/, notesPage)
-         .addRoute('about'    , /about$/, aboutPage)
-         .addRoute('auth'     , /auth$/ , loginPage)
-         .addRoute(''         , /$/     , homePage);
+         .addRoute('messages'  , /messages$/, notificationsPage)
+         .addRoute('functions' , /funcs$/, functionsPage)
+         .addRoute('notes'     , /notes$/, notesPage)
+         .addRoute('about'     , /about$/, aboutPage)
+         .addRoute('auth'      , /auth$/ , loginPage)
+         .addRoute(''          , /$/     , homePage);
 
     } else {
       ctx.currentUser = auth.currentUser;
@@ -251,14 +253,15 @@ window.onpopstate = function(event){
 // ServiceWorker
 // ==============================================================================
 window.addEventListener('load', () => {
-
   if('serviceWorker' in navigator){
-    try {
-      navigator.serviceWorker.register('serviceWorker.js');
-      console.log("Service Worker Registered");
-    } catch (error) {
-      console.log("Service Worker Registration Failed");
-    }
+      navigator.serviceWorker
+               .register('serviceWorker.js')
+               .then( sw => {
+                 console.log("Service Worker Registered");
+                 messaging.useServiceWorker(sw);
+               })
+               .catch( error => {
+                 console.log("Service Worker Registration Failed");
+               });
   }
-
 });

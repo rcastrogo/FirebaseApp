@@ -1,5 +1,6 @@
 import app from 'firebase/app';
 import 'firebase/functions';
+import 'firebase/messaging';
 import 'firebase/auth';
 import 'firebase/firebase-firestore';
 
@@ -16,7 +17,8 @@ const firebaseConfig = {
 app.initializeApp(firebaseConfig);
 
 const functions = app.functions();
-const database = app.firestore();
-const auth = app.auth();
+const database  = app.firestore();
+const auth      = app.auth();
+const messaging = app.messaging();
 //functions.useFunctionsEmulator('http://localhost:5001');
-export { functions, database, auth, app};
+export { functions, database, auth, app, messaging};
