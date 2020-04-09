@@ -69,7 +69,87 @@ async function networkFirst(req) {
   }
 }
 
+// ============================================================================================
+// Notificaciones
+// ============================================================================================
+
+function isClientFocused() {
+  let targets = [];
+  return clients.matchAll({
+    type: 'window',
+    includeUncontrolled: true
+  }).then((windowClients) => {
+    let isFocused = false;
+    for (let i = 0; i < windowClients.length; i++) {
+      const client = windowClients[i];
+      if (client.focused) {
+        isFocused = true;
+      }
+      targets.push(client)
+    }
+    return {isFocused, targets};
+  });
+}
+
+self.addEventListener('message', function(event) { 
+
+});
+
+let count = 0;
 self.addEventListener('push', function(event) {
-  const {notification} = JSON.parse(event.data.text());
-  event.waitUntil(self.registration.showNotification(notification.title, notification));
+
+  const {notification, data} = JSON.parse(event.data.text());
+
+  event.waitUntil(
+    self.registration
+      .getNotifications()
+      .then(list => {
+        if (list.length == 0) {
+          count = 1;
+        } else {
+          count++;
+          notification.title = `${count} mensajes de ${notification.title}`;
+        }
+        list.forEach(notif => notif.close());
+        return isClientFocused();
+      })
+      .then( result => {
+        notification.actions = JSON.parse(data['gcm.notification.actions']);
+        notification.data    = JSON.parse(data['gcm.notification.data']);
+        // ===================================================================
+        // Informar a la App siempre
+        // ===================================================================
+        result.targets
+              .forEach( client => {
+                client.postMessage({ name : 'notification', notification });
+              });
+        // ===================================================================
+        // Lanzar notificación si la app no esta activa
+        // ===================================================================
+        if (result.isFocused){
+          count = 0;
+          return new Promise((resolve) => undefined );
+        } else {
+          return self.registration
+                      .showNotification(notification.title, notification);
+        }
+      })
+    );                       
+});
+
+self.addEventListener('notificationclick', function(event) {
+  console.log(event);
+  let notification = {
+    title  : event.notification.title,
+    body   : event.notification.body,
+    tag    : event.notification.tag,
+    action : event.action || ''
+  }
+  clients.matchAll({ type: 'window'})
+         .then(clients => {
+           clients.forEach( c => {
+             c.postMessage({ name : 'clickEvent', notification });
+           });
+           event.notification.close();
+         });
 });

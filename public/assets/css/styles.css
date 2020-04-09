@@ -15,6 +15,19 @@
   opacity:.7
 }
 .w3-firebase-btn i{ vertical-align:sub; }
+
+.w3-xxx{
+  opacity: 1;
+  transition: 0.3s;
+  user-select:none;
+}
+
+.w3-xxx:hover {
+  opacity: 0.6;
+  transform: rotate(1deg);
+}
+
+
 h2, h3{color:#be7d00 !important}
 
 html{background-color: whitesmoke; }
@@ -28,10 +41,10 @@ textarea{ resize: none; width:100%;}
 
 #appMenu.w3-bar .w3-button.selected { background-color: #f68410 !important; color: white !important;}
 
-#notificationPanel {position:fixed;max-height:700px; overflow:auto; z-index:100; top:114px; width: 100%; }
+#notificationPanel {position:fixed;max-height:700px; overflow:auto; z-index:100; top:122px; width: 100%; }
 #notificationPanel div { box-shadow: 1px 3px 7px silver;background-color: white; margin: 6px; transition: all 1s; overflow:hidden;}
 #notificationPanel div.msg{ color: black; }
-#notificationPanel.sticky {top:40px; max-height:640px;}
+#notificationPanel.sticky {top:49px; max-height:640px;}
 
 .page-container {position:absolute;top:41px;bottom:0;left:0;right:0;overflow:auto}
 

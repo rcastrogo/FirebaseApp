@@ -1,7 +1,7 @@
 import pol from "./lib/mapa.js";
 import pubsub from "./lib/pubSub.Service";
 import utils from "./lib/utils.js";
-import {auth, messaging} from "./lib/firebase";
+import {auth, messaging, loadUsers} from "./lib/firebase";
 
 // ================================================================
 // Components
@@ -95,13 +95,37 @@ const ctx = {
       if(c.mounted) c.mounted(); 
     });
   }
-  // ===================================================================
+  // ====================================================================
   // Autenticación del usuario
-  // ===================================================================
+  // ====================================================================
   auth.onAuthStateChanged(function(user) {
     __initComponents();
     if (auth.currentUser) {
-      //user.getIdToken(true).then( result => { console.log(result); });
+      // ================================================================
+      // Tokens: JWT & Messaging
+      // ================================================================
+      user.getIdToken(true)
+          .then( result => { 
+            // ==========================================================
+            // JWT
+            // ==========================================================
+            ctx.accestoken = result;
+            localStorage.setItem('accesstoken', result);
+            // ==========================================================
+            // Messaging
+            // ==========================================================
+            messaging.getToken()
+                     .then( result => {
+                       localStorage.setItem('token', result);
+                     })
+                     .catch(error => {
+                       let message = 'Error : {0}'.format(error);
+                       ctx.publish(ctx.topics.NOTIFICATION, { message });
+                     });
+          });
+      // =================================================================
+      // Último usuario autenticado
+      // =================================================================
       localStorage.setItem('lastUserLoggedEmail', auth.currentUser.email);
       ctx.currentUser = auth.currentUser;
       ctx.router
@@ -178,7 +202,7 @@ const ctx = {
 
     ctx.subscribe(TOPICS.NOTIFICATION, function (msg, data) {
       let template = `<div class="msg w3-container w3-border w3-round w3-animate-top">
-                        <span on-click="close" class="w3-button w3-large w3-display-right">x</span>
+                        <span on-click="close" class="w3-button w3-large w3-display-topright">x</span>
                         <p style="overflow:hidden;margin-right:27px;">{message}</p>
                       </div>`
       let item = pol.build('div', template.format(data))
@@ -255,6 +279,8 @@ window.onpopstate = function(event){
 window.addEventListener('load', () => {
   if('serviceWorker' in navigator){
       navigator.serviceWorker
+               .addEventListener('message', serviceWorkerEventHandler );
+      navigator.serviceWorker
                .register('serviceWorker.js')
                .then( sw => {
                  console.log("Service Worker Registered");
@@ -265,3 +291,15 @@ window.addEventListener('load', () => {
                });
   }
 });
+
+function serviceWorkerEventHandler(event) {
+  if (event.data.name === 'clickEvent') {
+    //ctx.publish(TOPICS.NOTIFICATION, { message });
+    //return showNotificationMessage(event.data.notification.action);
+    //window.open(location.href);
+  }
+  if (event.data.name === 'notification') {
+    return ctx.publish('msg__notification_pushed', event.data.notification);
+  }
+}
+

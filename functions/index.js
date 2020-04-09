@@ -2,7 +2,6 @@
 // Firebase Functions
 // ===============================================================
 const functions = require('firebase-functions');
-
 // ===============================================================
 // Firebase
 // ===============================================================
@@ -42,6 +41,10 @@ const app     = express();
 const validateFirebaseIdToken = async (req, res, next) => {
   console.log(req.url);
   if (req._parsedUrl.pathname == '/auth/token') {
+    next();
+    return;
+  }
+  if (req._parsedUrl.pathname == '/auth/users') {
     next();
     return;
   }
@@ -113,6 +116,47 @@ app.get('/auth/data', async (req, res) => {
        });
 })
 
+app.get('/auth/users', async (req, res) => { 
+  if(!req.headers.authorization) {
+    return res.status(403)
+              .send({ message: "authorization: Bearer"});
+  }
+
+  listAllUsers()
+    .then(users => {
+      res.status(200)
+         .json( 
+           { data : { 
+             success  : true, 
+             users    : users
+           }
+         });
+    })
+    .catch(function(error) {
+      res.status(400)
+         .send(error);
+    });
+
+})
+
+function listAllUsers(nextPageToken) {
+  return new Promise((resolve, reject) => {
+    let users = [];
+    admin.auth()
+         .listUsers(1000, nextPageToken)
+         .then(function(result) {
+           result.users.forEach( user => {
+             let {uid, email} = user;
+             users.push({uid, email}); 
+           });
+           resolve(users);
+         })
+         .catch(function(error) {
+           reject('Error listing users: ' + error);
+         });
+  });
+}
+
 exports.helloWorld = functions.https.onCall((data, context) => {
   if (!context.auth){
     return { 
@@ -128,7 +172,7 @@ exports.helloWorld = functions.https.onCall((data, context) => {
 });
 
 exports.getDate = functions.https.onRequest((request, response) => {
-  response.set('Access-Control-Allow-Headers', 'Origin, Content-Type, authorization');
+  response.set('Access-Control-Allow-Headers', 'Origin, Content-Type, authorization, firebase-instance-id-token');
   response.set('Access-Control-Allow-Origin', request.headers.origin);
   response.set('Access-Control-Allow-Credentials', 'true');
   response.setHeader('Content-Type', 'application/json')

@@ -4,10 +4,22 @@ import pubsub from "./pubSub.Service";
 const EVENTS = ['[on-click]', '[on-publish]', '[route-link]', '[on-change]'];
 
 function addEventListeners(container, handlers, context) {
-
+  let subscriptions = [];
   let fn = {
     innerHTML : (e, value) => e.innerHTML = value,
-    className : (e, value) => e.className = value
+    className : (e, value) => e.className = value,
+    logger    : (e, value, tag) => {
+      if (value === ':clear') {
+        e.innerHTML = '';
+        return;
+      }
+      e.lastElementChild
+       .insertAdjacentHTML('beforebegin', 
+                           tag ? '<{0}>{1}</{0}>'.format(tag, value)
+                               : value);
+      e.lastElementChild
+       .scrollIntoView({block: "start", behavior: "smooth"});
+    }
   }
   
   EVENTS.forEach((selector, index) => {
@@ -42,18 +54,19 @@ function addEventListeners(container, handlers, context) {
          if (index === 1) {
            let topic = pol.templates.getValue(tokens[0], pubsub);
            topic = topic === window ? tokens[0] : topic;
-           pubsub.subscribe(topic, (message, data) => {
+           let subscriptionId = pubsub.subscribe(topic, (message, data) => {
              let fnName = tokens[1];
              if(fnName){
                let f = fn[fnName]       ||
                        handlers[fnName] || 
                        pol.templates.getValue(fnName, context);
-               if (f) f.apply(context, [e, data]);
+               if (f) f.apply(context, [e, data].concat(tokens.slice(2)));
                return;
              }else{
                fn.innerHTML(e, data);
              }
            })
+           subscriptions.push(subscriptionId);
          }
          // =============================================================
          // route-link
@@ -94,6 +107,9 @@ function addEventListeners(container, handlers, context) {
          }
        }); 
   });
+  
+  return subscriptions;
+
 }
 
 export default { 

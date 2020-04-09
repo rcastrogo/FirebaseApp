@@ -1,42 +1,97 @@
 ﻿
 <div>
-  <div class="w3-container w3-margin-bottom w3-animate-left">
 
-    <h3>Notificaciones</h3>
-    <div xbind xif="Notification.permission!='granted'" class="">
-      <p style="text-indent:1em;">
-        Para recibir y enviar mensajes al resto de usuarios debes habilitar las notificaciones.
-      </p>
-      <div class="w3-center">
-        <button type="button" on-click="requestPermission" 
-                class="w3-button w3-firebase-btn w3-center" 
-                style="text-align:left;padding-left: 20px;padding-right: 20px;">Habilitar
-        </button>
-      </div>
+  <!--
+  // =======================================================================================================
+  // Configuración inicial
+  // =======================================================================================================
+  -->
+  <div xbind xif="Notification.permission!='granted'" class="w3-container" style="display:none">
+    <h3>Mensajes y notificaciones</h3>
+    <p style="text-indent:1em;">
+      Para recibir y enviar mensajes al resto de usuarios debes habilitar las notificaciones.
+    </p>
+    <div class="w3-center">
+      <button type="button" on-click="requestPermission" 
+              class="w3-button w3-firebase-btn w3-center" 
+              style="text-align:left;padding-left: 20px;padding-right: 20px;">Habilitar
+      </button>
     </div>
-
-    <div xbind xif="Notification.permission=='granted'" class="">
-      <p style="text-indent:1em;">
-        Marca los grupos de los que quieres recibir notificaciones:
-        <ul class="w3-ul">
-          <li><label for="check-c" class="w3-block"><input id="check-c" class="w3-check" type="checkbox" on-click="subscribeUnsubscribe:cliclistas" /> Ciclistas</label></li>
-          <li><label for="check-p" class="w3-block"><input id="check-p" class="w3-check" type="checkbox" on-click="subscribeUnsubscribe:programadores" /> Programadores</label></li>
-          <li><label for="check-a" class="w3-block"><input id="check-a" class="w3-check" type="checkbox" on-click="subscribeUnsubscribe:administradores" /> Administradores</label></li>
-        </ul>
-      </p>
-
-      <div class="w3-card-4 w3-padding w3-round">
-        <textarea message xbind class="w3-padding w3-round" style="height:100px; display:inline-block;"></textarea>
-        <div class="w3-right-align w3-padding-small w3-center">
-          <button on-click="send" class="w3-tbutton w3-firebase-btn">>>></button>
-        </div>
-      </div>
-
-      <div class="w3-container w3-border-bottom w3-padding w3-margin" on-publish="msg__info">
-
-      </div>
- 
-    </div>
-
   </div>
+
+  <!--
+  // ===================================================================================================================================
+  // Panel de mensajes
+  // ===================================================================================================================================
+  -->
+  <div xbind xif="Notification.permission=='granted'" on-publish="TOPICS.VALUE_CHANGE:onFontSizeChanged" style="font-size:{fontSize}px">
+    <div xbind class="w3-padding-small" on-publish="msg__on__message:logger:div" >
+      <div style="height:10px; visibility:hidden;"></div>
+      <div style="height:40px; visibility:hidden;"></div>
+    </div>
+  </div>
+
+  <!--
+  // ===================================================================================================================================
+  // Panel de configuración
+  // ===================================================================================================================================
+  -->
+  <div xbind 
+       style="max-height:260px;height:0;transition:ease-in-out all .5s;position:fixed;bottom:0;left:0;right:0;z-index:111111;background-color:white;"
+       id="config-panel">
+    <div class="w3-firebase w3-padding-small">
+      <button on-click="closeConfig" 
+              class="w3-bar-item w3-button" 
+              style="padding:6px 4px;vertical-align:baseline">
+      <i class="fa fa-arrow-left"></i></button> Configuración
+    </div>
+    <div class="w3-padding" style="max-height:100%; overflow:auto;">
+      Tamaño de la letra:
+      <div class="w3-center w3-padding-small">
+        <input xbind type="range" min="15" max="30" value="{fontSize}" on-change="publish" style="width:90%">
+      </div>
+      Enviar mensajes a los:
+      <div class="w3-padding-small">
+        <select class="w3-block w3-padding-small">
+          <option value="ciclistas">Ciclistas</option>
+          <option value="administradores">Administradores</option>
+          <option value="programadores">Programadores</option>
+        </select>
+      </div>
+      Recibir mensajes de:
+      <div class="">
+        <ul class="w3-ul w3-padding-small">
+          <li><label for="check-c" class="w3-block"><input xbind="checked:topics.ciclistas" id="check-c" class="w3-check" type="checkbox" on-click="subscribeUnsubscribe:ciclistas" /> Ciclistas</label></li>
+          <li><label for="check-p" class="w3-block"><input xbind="checked:topics.programadores" id="check-p" class="w3-check" type="checkbox" on-click="subscribeUnsubscribe:programadores" /> Programadores</label></li>
+          <li><label for="check-a" class="w3-block"><input xbind="checked:topics.administradores" id="check-a" class="w3-check" type="checkbox" on-click="subscribeUnsubscribe:administradores" /> Administradores</label></li>
+        </ul>
+      </div>
+      <div style="height:30px"></div>
+    </div>
+  </div>
+
+</div>
+
+<!--
+// ===================================================================================================================================
+// Panel de envío de mensajes
+// ===================================================================================================================================
+-->
+<div class="w3-firebase" 
+     on-publish="msg__on__panel__ready:showElement"
+     style="display:none;position: fixed;bottom: 0;z-index: 11111;left: 0;right: 0;padding: 3px;text-align:center">
+  <button on-click="showConfig" 
+          class="w3-bar-item w3-button" 
+          style="padding:2px;">
+    <i class="fa fa-2x fa-gear"></i>
+  </button>
+  <textarea xbind 
+            class="w3-round w3-border-0 w3-padding-small" 
+            style="background-color:whitesmoke;text-align:left;height:50px;display:inline-block;width:calc(100% - 75px);vertical-align:middle">
+  </textarea>
+  <button on-click="send" 
+          class="w3-bar-item w3-button" 
+          style="padding:2px;">
+    <i class="fa fa-2x fa-arrow-right"></i>
+  </button>
 </div>

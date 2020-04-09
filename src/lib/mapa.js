@@ -509,8 +509,8 @@ let __module = {};
       get  : function (url, interceptor) {
         return new Promise( (resolve, reject) => {
           var xml = this.createXMLHttpRequest();
-          if(interceptor) interceptor(xml);
           xml.open('GET', url, true);
+          if(interceptor) interceptor(xml);
           xml.onreadystatechange = function () { 
             if (xml.readyState == 4){
               resolve(xml.responseText)
@@ -531,6 +531,21 @@ let __module = {};
             xml.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset:ISO-8859-1');
           }
           xml.onreadystatechange = function() { if (xml.readyState == 4) resolve(xml.responseText) };
+          xml.onerror = function(e) { reject(e); };
+          xml.send(params);        
+        });
+      },
+      delete : function(url, params, interceptor) {
+        return new Promise( (resolve, reject) => {
+          var xml = this.createXMLHttpRequest();
+          xml.open('DELETE', url, true);
+          if(interceptor){
+            interceptor(xml);
+          } else {
+            xml.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset:ISO-8859-1');
+          }
+          xml.onreadystatechange = function() { if (xml.readyState == 4) resolve(xml.responseText) };
+          xml.onerror = function(e) { reject(e); };
           xml.send(params);        
         });
       },

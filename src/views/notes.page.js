@@ -1,11 +1,13 @@
-import pol from "../lib/mapa.js";
-import {database, auth, app as firebase} from '../lib/firebase';
+锘縤mport pol from "../lib/mapa.js";
+import {database, loadUsers, app as firebase} from '../lib/firebase';
 import utils from "../lib/utils.js";
 
 const html_content     = require('./notes.page.template');
 const SERVER_TIMESTAMP = firebase.firestore.FieldValue.serverTimestamp();
 
 export default function(ctx){
+  
+  let users = [];
 
   let component = {
     root   : {},
@@ -24,28 +26,44 @@ export default function(ctx){
 
   function initAll() {
     component.loadingBox.style.display = 'block';
-    loadData().then(notas => {
-                let context = { 
-                  notas : notas,
-                  save  : function (button) {
-                    saveNote(button);
-                  },
-                  delete: function (button) {
-                    deleteNote(button);
-                  },
-                  add: function (button) {
-                    insertNote(button);
-                  }
-                };
-                pol.templates.fill(component.root, context);
-                utils.addEventListeners(component.root, {}, context);
-                component.loadingBox.style.display = 'none';
-                component.listContainer.style.display = 'block';
-              })
-              .catch(e => {
-                console.log(e);
-              });
-
+    loadUsers(ctx.accesstoken)
+      .then(result => {
+        users = result.data
+                      .users
+                      .map( user => {
+                        user.email = user.email.split('@')[0];
+                        return user;
+                      })
+                      .toDictionary('uid', 'email');
+        return loadData();
+      })
+      .then(notas => {
+        let context = { 
+          notas : notas.map( nota => {
+            nota.username = users[nota.uid];
+            return nota;
+          }),
+          users : users,
+          save  : function (button) {
+            saveNote(button);
+          },
+          delete: function (button) {
+            deleteNote(button);
+          },
+          add: function (button) {
+            insertNote(button);
+          }
+        };
+        pol.templates.fill(component.root, context);
+        utils.addEventListeners(component.root, {}, context);
+        component.loadingBox.style.display = 'none';
+        component.listContainer.style.display = 'block';
+      })
+      .catch( error => {
+        console.log(error);
+        let message = 'Error de inicializaci贸n: {0}'.format(error);
+        ctx.publish(ctx.topics.NOTIFICATION, { message });
+      });
   }
 
   function loadData() {
@@ -94,7 +112,7 @@ export default function(ctx){
                 .parentNode
                 .parentNode.id = 'div-{0}'.format(ref.id);
           // =======================================================
-          // Mensaje de informaci髇
+          // Mensaje de informaci贸n
           // =======================================================
           //let msg = 'Nota grabada con el id: {0}'.format(ref.id);
           //ctx.publish(ctx.topics.NOTIFICATION, { message : msg }); 
@@ -122,7 +140,7 @@ export default function(ctx){
             .then(function() {
               nota.style.opacity = '';
               // =====================================================
-              // Mensaje de informaci髇
+              // Mensaje de informaci贸n
               // =====================================================
               //ctx.publish(ctx.topics.NOTIFICATION, { 
               //  message : 'Nota grabada correctamente'
@@ -156,7 +174,7 @@ export default function(ctx){
                 // =====================================================
                 nota.parentNode.removeChild(nota);
                 // =====================================================
-                // Mensaje de informaci髇
+                // Mensaje de informaci贸n
                 // =====================================================
                 //ctx.publish(ctx.topics.NOTIFICATION, { 
                 //  message : 'Nota borrada correctamente'
@@ -179,6 +197,7 @@ export default function(ctx){
         id        : 'empty', 
         contenido : 'Texto de la nota',
         uid       : ctx.currentUser.uid,
+        username  : users[ctx.currentUser.uid],
         timestamp : new Date()
       }],
       save   : saveNote,
