@@ -131,7 +131,7 @@ const ctx = {
       ctx.router
          .clear()
          .addRoute('messages'  , /messages$/, notificationsPage)
-         .addRoute('functions' , /funcs$/, functionsPage)
+         .addRoute('funcs'     , /funcs$/, functionsPage)
          .addRoute('notes'     , /notes$/, notesPage)
          .addRoute('about'     , /about$/, aboutPage)
          .addRoute('auth'      , /auth$/ , loginPage)

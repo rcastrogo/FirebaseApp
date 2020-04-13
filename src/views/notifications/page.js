@@ -25,20 +25,19 @@ export default function(ctx){
       initAll();
     },
     dispose: function () {
+      function doDispose() {
+        let __last = notifications.slice(Math.max(notifications.length - 120, 0))
+        localStorage.setItem('notifications', JSON.stringify(__last));
+        subscriptions.forEach(id => ctx.unsubscribe(id));
+      }
       setTimeout(doDispose, 100);
     }
   };
 
-  function doDispose() {
-    let __last = notifications.slice(Math.max(notifications.length - 120, 0))
-    localStorage.setItem('notifications', JSON.stringify(__last));
-    subscriptions.forEach(id => ctx.unsubscribe(id));
-  }
-
   function initAll() {
-    // =======================================================
+    // ============================================================
     // Inicializar la interfaz de usuario
-    // =======================================================
+    // ============================================================
     pol.templates.fill(component.root, {
       addEventListeners : function (e, scope){
         subscriptions = utils.addEventListeners(e, scope);
@@ -64,7 +63,7 @@ export default function(ctx){
       send        : sendMessage,
       showConfig  : showConfig,
       closeConfig : closeConfig,
-      topics : { 
+      topics      : { 
         ciclistas       : localStorage.getItem('ciclistas')       ? true : false,
         programadores   : localStorage.getItem('programadores')   ? true : false,
         administradores : localStorage.getItem('administradores') ? true : false
@@ -78,9 +77,9 @@ export default function(ctx){
         target.style.display = 'block';
       }
     });   
-    // =======================================================
+    // ============================================================
     // Cargar usuarios
-    // =======================================================
+    // ============================================================
     loadUsers(ctx.accesstoken)
       .then(result => {
         users = result.data
@@ -91,12 +90,11 @@ export default function(ctx){
                       })
                       .toDictionary('uid', 'email');
     });
-    // =======================================================
+    // ============================================================
     // Cargar las notificaciones almacenadas
-    // =======================================================
+    // ============================================================
     loadSavedMessages().then(result => {
-      let builder = getMessageBuilder();
-      let html = notifications.map( n => builder('', n) )
+      let html = notifications.map( n => getMessageBuilder('', n) )
                               .join('');
       ctx.publish('msg__on__message', html);
       ctx.publish('msg__on__panel__ready', {});
@@ -104,9 +102,11 @@ export default function(ctx){
     // ========================================================================
     // Subcripción a la entrada de nuevas notificaciones
     // ========================================================================
-    subscriptions.add(ctx.subscribe('msg__notification_pushed',getMessageBuilder()));
+    subscriptions.add(ctx.subscribe('msg__notification_pushed', getMessageBuilder));
   }
   
+  let __last = { user : '', day : '' };
+
   function loadSavedMessages() {
     return new Promise((resolve, reject) => {
       setTimeout(function(){
@@ -116,45 +116,49 @@ export default function(ctx){
     });
   }
 
-  function getMessageBuilder() {
-    let __last = { user : '', day : '' };
-    return function (msg, notification) {
-      let date    = new Date();
-      let message = '<div class="w3-clear" style="width:100%;">' +
-                      '{fecha}' +
-                      '<div class="w3-xxx w3-padding-small w3-round w3-border w3-{color} w3-{align}" style="width: fit-content;max-width:95%;margin-bottom:2px;">' + 
-                        '<div class="w3-bold">{username}</div>' +
-                        '<div style="overflow-wrap:break-word;">{body}</div>' + 
-                        '<div class="w3-right-align w3-small">{hour|paddingLeft,00}:{minutes|paddingLeft,00}</div>' +
-                      '</div>' +
-                    '</div>';
-      let current           = notification.data.uid == ctx.currentUser.uid;
-      notification.day      = notification.day  || date.format();
-      notification.hour     = notification.hour || date.getHours().toString();
-      notification.minutes  = notification.minutes || date.getMinutes().toString();
-      notification.username = notification.username || users[notification.data.uid] || '';
-      let context = { 
-        body     : notification.body,
-        hour     : notification.hour,
-        minutes  : notification.minutes,
-        username : notification.data.uid == __last.user ? '' : notification.username,
-        align    : current ? 'right' : 'left',
-        color    : current ? 'pale-yellow' : 'white',
-        fecha    : notification.day == __last.day 
-                      ? '' 
-                      : ('<div class="w3-center w3-margin">' + 
-                           '<span class="w3-border w3-margin w3-round w3-padding-small w3-white">{day}</span>' + 
-                         '</div>').format(notification)
-      };
-      __last.user = notification.data.uid;
-      __last.day  = notification.day;
-      let html = message.format(context);
-      if (msg) {
-        ctx.publish('msg__on__message', html);
-        notifications.push(notification);
+  function getMessageBuilder(msg, notification) {
+    let date    = new Date();
+    let message = '<div class="w3-clear" style="width:100%;">' +
+                    '{fecha}' +
+                    '<div class="w3-xxx w3-padding-small w3-round w3-border w3-{color} w3-{align}" style="width: fit-content;max-width:95%;margin-bottom:2px;">' + 
+                      '<div class="w3-bold">{username}</div>' +
+                      '<div style="overflow-wrap:break-word;">{body}</div>' + 
+                      '<div class="w3-right-align w3-small">{hour|paddingLeft,00}:{minutes|paddingLeft,00}</div>' +
+                    '</div>' +
+                  '</div>';
+    let current           = notification.data.uid == ctx.currentUser.uid;
+    notification.day      = notification.day  || date.format();
+    notification.hour     = notification.hour || date.getHours().toString();
+    notification.minutes  = notification.minutes || date.getMinutes().toString();
+    notification.username = notification.username || users[notification.data.uid] || '';
+    let context = { 
+      body     : notification.body,
+      hour     : notification.hour,
+      minutes  : notification.minutes,
+      username : notification.data.uid == __last.user ? '' : notification.username,
+      align    : current ? 'right' : 'left',
+      color    : current ? 'pale-yellow' : 'white',
+      fecha    : notification.day == __last.day 
+                    ? '' 
+                    : ('<div class="w3-center w3-margin">' + 
+                          '<span class="w3-border w3-margin w3-round w3-padding-small w3-white">{day}</span>' + 
+                        '</div>').format(notification)
+    };
+    __last.user = notification.data.uid;
+    __last.day  = notification.day;
+    let html = message.format(context);
+    if (msg) {
+      // =====================================================
+      // Mensaje local recibido desde la nube. Ya en la lista.
+      // =====================================================
+      if (msg === 'msg__notification_pushed' &&
+          notification.data.uid == ctx.currentUser.uid){
+        return;
       }
-      return html;
+      notifications.push(notification);
+      ctx.publish('msg__on__message', html);
     }
+    return html;
   }
 
   let textarea;
@@ -181,17 +185,24 @@ export default function(ctx){
       },
       data : { uid: ctx.currentUser.uid }
     }
+    // =============================================================
+    // Mensaje local
+    // =============================================================
+    getMessageBuilder('local', body.notification);
+    textarea.value = '';
+    // =============================================================
+    // Mensaje al resto
+    // =============================================================
     pol.ajax
        .post(url, JSON.stringify(body), req => {
          req.setRequestHeader('Content-Type', 'application/json');
          req.setRequestHeader('Authorization', 'key=' + SERVER_KEY);
        })
        .then(result => {
-         textarea.value = '';
-         //ctx.publish('msg__info', result);
+         //textarea.value = '';
        })
        .catch( e => {
-         ctx.publish('msg__info', 'error ' + e);
+         ctx.publish(ctx.topics.NOTIFICATION, { message : e });
        });
   }
 

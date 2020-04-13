@@ -1,9 +1,9 @@
 ﻿
 <nav id="appMenu" class="w3-bar w3-firebase">
-  <a href=""      data-key=""          route-link on-publish="TOPICS.VIEW_CHANGE:sync" class="w3-bar-item w3-button selected"><i class="fa fa-2x fa-home"></i></a>
-  <a href="notes" data-key="notes"     route-link on-publish="TOPICS.VIEW_CHANGE:sync" class="w3-bar-item w3-button "><i class="fa fa-2x fa-sticky-note"></i></a>
-  <a href="funcs"  data-key="functions" route-link on-publish="TOPICS.VIEW_CHANGE:sync" class="w3-bar-item w3-button "><i class="fa fa-2x fa-cogs"></i></a>
-  <a href="messages"  data-key="messages" route-link on-publish="TOPICS.VIEW_CHANGE:sync" class="w3-bar-item w3-button "><i class="fa fa-2x fa-comments-o"></i></a>
-  <a href="about" data-key="about"     route-link on-publish="TOPICS.VIEW_CHANGE:sync" class="w3-bar-item w3-button w3-right"><i class="fa fa-2x fa-question"></i></a>
-  <a href="auth"  data-key="auth"      route-link on-publish="TOPICS.VIEW_CHANGE:sync" class="w3-bar-item w3-button w3-right"><i class="fa fa-2x fa-user"></i></a>
+  <a href=""         data-key=""         route-link on-publish="TOPICS.VIEW_CHANGE:sync" class="w3-bar-item w3-button selected"><i class="fa fa-2x fa-home"></i></a>
+  <a href="notes"    data-key="notes"    route-link on-publish="TOPICS.VIEW_CHANGE:sync" class="w3-bar-item w3-button "><i class="fa fa-2x fa-sticky-note"></i></a>
+  <a href="funcs"    data-key="funcs"    route-link on-publish="TOPICS.VIEW_CHANGE:sync" class="w3-bar-item w3-button "><i class="fa fa-2x fa-cogs"></i></a>
+  <a href="messages" data-key="messages" route-link on-publish="TOPICS.VIEW_CHANGE:sync" class="w3-bar-item w3-button "><i class="fa fa-2x fa-comments-o"></i></a>
+  <a href="about"    data-key="about"    route-link on-publish="TOPICS.VIEW_CHANGE:sync" class="w3-bar-item w3-button w3-right"><i class="fa fa-2x fa-question"></i></a>
+  <a href="auth"     data-key="auth"     route-link on-publish="TOPICS.VIEW_CHANGE:sync" class="w3-bar-item w3-button w3-right"><i class="fa fa-2x fa-user"></i></a>
 </nav>  

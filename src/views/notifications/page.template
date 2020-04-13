@@ -45,7 +45,7 @@
               style="padding:6px 4px;vertical-align:baseline">
       <i class="fa fa-arrow-left"></i></button> Configuración
     </div>
-    <div class="w3-padding" style="max-height:100%; overflow:auto;">
+    <div class="w3-padding" style="max-height:calc(100% - 42px); overflow:auto;">
       Tamaño de la letra:
       <div class="w3-center w3-padding-small">
         <input xbind type="range" min="15" max="30" value="{fontSize}" on-change="publish" style="width:90%">
