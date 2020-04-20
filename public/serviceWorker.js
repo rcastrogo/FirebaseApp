@@ -138,18 +138,51 @@ self.addEventListener('push', function(event) {
 });
 
 self.addEventListener('notificationclick', function(event) {
-  console.log(event);
-  let notification = {
-    title  : event.notification.title,
-    body   : event.notification.body,
-    tag    : event.notification.tag,
-    action : event.action || ''
-  }
-  clients.matchAll({ type: 'window'})
-         .then(clients => {
-           clients.forEach( c => {
-             c.postMessage({ name : 'clickEvent', notification });
-           });
-           event.notification.close();
-         });
+  //console.log(event);
+  //let notification = {
+  //  title  : event.notification.title,
+  //  body   : event.notification.body,
+  //  tag    : event.notification.tag,
+  //  action : event.action || ''
+  //}
+
+  event.notification.close();
+
+  //clients.matchAll({ type: 'window'})
+  //       .then(clients => {
+  //         clients.forEach( c => {
+  //           c.postMessage({ name : 'clickEvent', notification });
+  //         });
+           
+  //       });
+
+  //var promise = new Promise(function(resolve) {
+  //  setTimeout(resolve, 2000);
+  //}).then(function() {
+  //  return clients.openWindow('https://notas-app.firebaseapp.com/messages');
+  //});
+
+  //event.waitUntil(promise);
+
+
+      event.waitUntil(async function () {
+        const allClients = await clients.matchAll({
+            includeUncontrolled: true
+        });
+        let chatClient;
+        let appUrl = 'https://notas-app.firebaseapp.com';
+        for (const client of allClients) {
+            if(client['url'].indexOf(appUrl) >= 0) 
+            {
+                client.focus();
+                chatClient = client;
+                break;
+            }
+        }
+        if (!chatClient) {
+            chatClient = await clients.openWindow(appUrl);
+        }
+    }());
+
+
 });
